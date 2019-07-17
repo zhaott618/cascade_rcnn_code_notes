@@ -43,17 +43,21 @@ import detectron.utils.blob as blob_utils
 # by Zhaowei Cai
 # ---------------------------------------------------------------------------- #
 
-
+####
 def add_cascade_proposal_outputs(model, stage, pre_stage):
     """Add RoI classification and bounding box regression output ops."""
     stage_name = "_{}".format(stage)
     pre_stage_name = "_{}".format(pre_stage) if pre_stage >= 2 else ""
 
     # decode bboxes from previous stages
+    ### 这里为什么要 pre_stage-1 ????
     bbox_reg_weights = cfg.CASCADE_RCNN.BBOX_REG_WEIGHTS[pre_stage - 1]
     blobs_in = ["bbox_pred" + pre_stage_name, "rois" + pre_stage_name]
     if model.train:
+        ###训练阶段有mapped_gt_boxes这个维度
         blobs_in += ["mapped_gt_boxes" + pre_stage_name]
+
+    #### 解码bboxes，即根据回归参数和权重调整该阶段输出的proposals
     model.DecodeBBoxes(blobs_in, "proposals" + stage_name, bbox_reg_weights)
 
     if cfg.FPN.FPN_ON:

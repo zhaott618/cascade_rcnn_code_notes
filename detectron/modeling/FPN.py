@@ -491,16 +491,20 @@ def add_fpn_rpn_losses(model):
 # ---------------------------------------------------------------------------- #
 
 def map_rois_to_fpn_levels(rois, k_min, k_max):
+    ###决定每个roi应该属于哪个lvl
     """Determine which FPN level each RoI in a set of RoIs should map to based
     on the heuristic in the FPN paper.
     """
     # Compute level ids
     s = np.sqrt(box_utils.boxes_area(rois))
+    ###fpn典型尺度
     s0 = cfg.FPN.ROI_CANONICAL_SCALE  # default: 224
+    ###fpn典型lvl数
     lvl0 = cfg.FPN.ROI_CANONICAL_LEVEL  # default: 4
 
     # Eqn.(1) in FPN paper
     target_lvls = np.floor(lvl0 + np.log2(s / s0 + 1e-6))
+    ###截断函数
     target_lvls = np.clip(target_lvls, k_min, k_max)
     return target_lvls
 

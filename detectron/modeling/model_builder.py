@@ -144,6 +144,7 @@ def create(model_type_func, train=False, gpu_id=0):
 
 
 def get_func(func_name):
+    ### 根据function名字 return具体的function(在这个module内)
     """Helper to return a function object by name. func_name must identify a
     function in this module or the path to a function relative to the base
     'modeling' module.
@@ -171,6 +172,8 @@ def get_func(func_name):
         raise
 
 
+
+###这里建立检测网络基本模型， add_conv_body_func什么意思？？？？
 def build_generic_detection_model(
     model,
     add_conv_body_func,
@@ -181,17 +184,23 @@ def build_generic_detection_model(
     freeze_conv_body=False
 ):
     def _single_gpu_build_func(model):
+        ### 在单块gpu上建立模型，产生数据并行的模型
         """Build the model on a single GPU. Can be called in a loop over GPUs
         with name and device scoping to create a data parallel model.
         """
         # Add the conv body (called "backbone architecture" in papers)
         # E.g., ResNet-50, ResNet-50-FPN, ResNeXt-101-FPN, etc.
+        ###  添加卷积骨架网络
+
+        #### 下面这几句都是啥意思？？？
         blob_conv, dim_conv, spatial_scale_conv = add_conv_body_func(model)
         if freeze_conv_body:
             for b in c2_utils.BlobReferenceList(blob_conv):
                 model.StopGradient(b, b)
 
         if not model.train:  # == inference
+
+            ### 创建推断时执行的卷积网络结构
             # Create a net that can be used to execute the conv body on an image
             # (without also executing RPN or any other network heads)
             model.conv_body_net = model.net.Clone('conv_body_net')
@@ -306,7 +315,7 @@ def _check_for_cascade_rcnn():
     if cfg.CASCADE_RCNN.SCALE_GRAD:
         assert not cfg.CASCADE_RCNN.SCALE_LOSS
 
-
+###终于到正题了
 def _add_cascade_rcnn_head(
     model, add_roi_cascade_head_func, blob_in, dim_in, spatial_scale_in, stage
 ):

@@ -125,6 +125,7 @@ def add_cascade_rcnn_blobs(blobs, im_scales, roidb, stage):
 
 
 def _sample_rois(roidb, im_scale, batch_idx, stage):
+    #随机产生包含前景和背景的正负样本 rois集
     """Generate a random sample of RoIs comprising foreground and background
     examples.
     """

@@ -148,6 +148,7 @@ def clip_tiled_boxes(boxes, im_shape):
 
 
 def bbox_transform(boxes, deltas, weights=(1.0, 1.0, 1.0, 1.0)):
+    ###该函数用于将proposals映射到 预测的gt boxes（使用回归值及其权重）
     """Forward transform that maps proposal boxes to predicted ground-truth
     boxes using bounding-box regression deltas. See bbox_transform_inv for a
     description of the weights argument.
@@ -162,6 +163,8 @@ def bbox_transform(boxes, deltas, weights=(1.0, 1.0, 1.0, 1.0)):
     ctr_x = boxes[:, 0] + 0.5 * widths
     ctr_y = boxes[:, 1] + 0.5 * heights
 
+
+    ###这些权重用于改变 deltas在datasets上的分布
     wx, wy, ww, wh = weights
     dx = deltas[:, 0::4] / wx
     dy = deltas[:, 1::4] / wy
@@ -172,6 +175,7 @@ def bbox_transform(boxes, deltas, weights=(1.0, 1.0, 1.0, 1.0)):
     dw = np.minimum(dw, cfg.BBOX_XFORM_CLIP)
     dh = np.minimum(dh, cfg.BBOX_XFORM_CLIP)
 
+    ###用论文中的公式对proposals进行位置精修，得到预测框
     pred_ctr_x = dx * widths[:, np.newaxis] + ctr_x[:, np.newaxis]
     pred_ctr_y = dy * heights[:, np.newaxis] + ctr_y[:, np.newaxis]
     pred_w = np.exp(dw) * widths[:, np.newaxis]
@@ -186,7 +190,7 @@ def bbox_transform(boxes, deltas, weights=(1.0, 1.0, 1.0, 1.0)):
     pred_boxes[:, 2::4] = pred_ctr_x + 0.5 * pred_w - 1
     # y2 (note: "- 1" is correct; don't be fooled by the asymmetry)
     pred_boxes[:, 3::4] = pred_ctr_y + 0.5 * pred_h - 1
-
+    ####得到该级检测器输出的预测框
     return pred_boxes
 
 

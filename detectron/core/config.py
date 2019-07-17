@@ -678,6 +678,7 @@ __C.CASCADE_RCNN.NUM_STAGE = 3
 __C.CASCADE_RCNN.TEST_STAGE = 0
 __C.CASCADE_RCNN.TEST_ENSEMBLE = True
 
+#   注意这里的3个阈值
 # Overlap threshold for an RoI to be considered foreground (if >= FG_THRESH)
 __C.CASCADE_RCNN.FG_THRESHS = (0.5, 0.6, 0.7)
 
@@ -688,6 +689,7 @@ __C.CASCADE_RCNN.BG_THRESHS_LO = (0.0, 0.0, 0.0)
 
 # Default weights on (dx, dy, dw, dh) for normalizing bbox regression targets
 # These are empirically chosen to approximately lead to unit variance targets
+## 权重选择为了得到 回归目标的单位方差，各阶段均有自己对应的回归权重
 __C.CASCADE_RCNN.BBOX_REG_WEIGHTS = ((10., 10., 5., 5.), (20., 20., 10., 10.),
                                      (30., 30., 15., 15.))
 
@@ -697,6 +699,8 @@ __C.CASCADE_RCNN.SCALE_LOSS = True
 # scale loss for cascade stages
 __C.CASCADE_RCNN.SCALE_GRAD = False
 
+
+## 这个权重是干嘛的？？？
 # weights for cascade stages
 __C.CASCADE_RCNN.STAGE_WEIGHTS = (1.0, 0.5, 0.25)
 

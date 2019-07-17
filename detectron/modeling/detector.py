@@ -230,19 +230,27 @@ class DetectionModelHelper(cnn.CNNModelHelper):
 
         return outputs
 
+
+    #### 此函数用于调整某阶段网络输出的proposals，使用网络回归的参数值
     def DecodeBBoxes(self, blobs_in, blobs_out, bbox_reg_weights):
         """Op for decoding bboxes. Only support class-agnostic bbox regression.
         by Zhaowei Cai for Cascade R-CNN
 
         blobs_in:
+            ####上一个阶段得到的回归参数，作为blobs[0]，用于将上一个阶段的预测框
+            ####调整后输入下一个阶段
           - 'bbox_pred_<j>': 2D tensor of shape (R, 4 * 2) of predicted deltas
             for transformation previous boxes into next boxes, at stage j.
+             #### 下面这个参数代表某一阶段的输入的所有proposals, 以及batch_inds
+             #### 作为blobs[1]
           - 'rois_<j>': 2D tensor of shape (R, 5), for proposals where the
             five columns encode [batch ind, x1, y1, x2, y2], at stage j.
 
+        #### 训练阶段还会包含mapped_gt_boxes, 用于移除多余的gt框
         If used during training, then the input blobs will also include:
           [mapped_gt_boxes_<j>], which is used to remove redundant ground truth.
 
+        #### 输出是下一阶段的proposals
         blobs_out:
           - 'proposals_<j+1>': 2D tensor of shape (R, 5), for proposals where the
             five columns encode [batch ind, x1, y1, x2, y2].
@@ -254,23 +262,32 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         return blobs_out
 
     def DistributeCascadeProposals(self, stage):
+        ###用于将proposals分配给各level, 若采用fpn架构的话
         """Distribute proposals to their appropriate FPN levels.
         by Zhaowei Cai for Cascade R-CNN
 
         Input blobs:
+        ###输入为第j个stage所输出的调整过的proposals
           - proposals_<j> are the decoded proposals from stage j; see
             documentation from DecodeBBoxes.
 
+        ###若在训练阶段使用，还会有以下输入blobs: [roidb, im_info]
         If used during training, then the input blobs will also include:
           [roidb, im_info] (see GenerateProposalLabels).
 
+
         Output blobs: [rois_fpn<min>, ..., rois_rpn<max>, rois,
                        rois_idx_restore]
+        ###输出为：每一个 fpn lvl的proposals, 所有proposals的一个排列(为了
+        ###保留这些proposals在input blob中的初始顺序？？)
           - rois_fpn<i> are the RPN proposals for FPN level i
           - rois_idx_restore is a permutation on the concatenation of all
             rois_fpn<i>, i=min...max, such that when applied the RPN RoIs are
             restored to their original order in the input blobs.
 
+        ###训练阶段还包含：gt框的相关信息，其中bbox_inside_weights表示回归损失公式
+        ###中的Pi*, 即bbox_inside_weights==1, bbox_outside_weights==0即只对正样本
+        ###计算回归损失
         If used during training, then the output blobs will also include:
           [labels, bbox_targets, bbox_inside_weights, bbox_outside_weights,
           mapped_gt_boxes].
@@ -281,15 +298,18 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         blobs_in = ['proposals' + stage_name]
         if self.train:
             blobs_in += ['roidb', 'im_info']
+        ####下面这一句是干嘛的？？？
         blobs_in = [core.ScopedBlobReference(b) for b in blobs_in]
         name = 'DistributeCascadeProposalsOp:' + ','.join(
             [str(b) for b in blobs_in]
         )
 
         # Prepare output blobs
+        ##准备输出数据blob容器
         blobs_out = cascade_rcnn_roi_data.get_cascade_rcnn_blob_names(
             stage, is_training=self.train
         )
+        ###又是这个函数
         blobs_out = [core.ScopedBlobReference(b) for b in blobs_out]
 
         outputs = self.net.Python(
