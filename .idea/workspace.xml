@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d3f2ae51-7347-4f7e-b229-63d12b5e833c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/detectron/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/detectron/core/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/detectron/modeling/FPN.py" beforeDir="false" afterPath="$PROJECT_DIR$/detectron/modeling/FPN.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/detectron/modeling/cascade_rcnn_heads.py" beforeDir="false" afterPath="$PROJECT_DIR$/detectron/modeling/cascade_rcnn_heads.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/detectron/modeling/detector.py" beforeDir="false" afterPath="$PROJECT_DIR$/detectron/modeling/detector.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/detectron/modeling/model_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/detectron/modeling/model_builder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/detectron/ops/decode_bboxes.py" beforeDir="false" afterPath="$PROJECT_DIR$/detectron/ops/decode_bboxes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/detectron/ops/distribute_cascade_proposals.py" beforeDir="false" afterPath="$PROJECT_DIR$/detectron/ops/distribute_cascade_proposals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/detectron/roi_data/cascade_rcnn.py" beforeDir="false" afterPath="$PROJECT_DIR$/detectron/roi_data/cascade_rcnn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/detectron/utils/boxes.py" beforeDir="false" afterPath="$PROJECT_DIR$/detectron/utils/boxes.py" afterDir="false" />
-    </list>
+    <list default="true" id="d3f2ae51-7347-4f7e-b229-63d12b5e833c" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -205,6 +195,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -233,12 +224,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1563375490727</updated>
-      <workItem from="1563375499177" duration="9789000" />
+      <workItem from="1563375499177" duration="10405000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9789000" />
+    <option name="totallyTimeSpent" value="10405000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
