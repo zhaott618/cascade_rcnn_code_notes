@@ -31,14 +31,20 @@ logger = logging.getLogger(__name__)
 
 
 def build_data_parallel_model(model, single_gpu_build_func):
+
+    ####通过给定的function，建立一个数据并行的模型，并且仅在一块gpu上运行
     """Build a data parallel model given a function that builds the model on a
     single GPU.
     """
+    ####仅仅建立前向传播模型
     if model.only_build_forward_pass:
         single_gpu_build_func(model)
+    ####如果处于训练阶段
     elif model.train:
         all_loss_gradients = _build_forward_graph(model, single_gpu_build_func)
+
         # Add backward pass on all GPUs
+
         model.AddGradientOperators(all_loss_gradients)
         if cfg.NUM_GPUS > 1:
             _add_allreduce_graph(model)
@@ -55,12 +61,16 @@ def build_data_parallel_model(model, single_gpu_build_func):
 
 
 def _build_forward_graph(model, single_gpu_build_func):
+    #### 在每个gpu上构建前向计算图
     """Construct the forward graph on each GPU."""
     all_loss_gradients = {}  # Will include loss gradients from all GPUs
+
     # Build the model on each GPU with correct name and device scoping
     for gpu_id in range(cfg.NUM_GPUS):
+        #### 在对应的gpu和scope下建立模型，并更新参数
         with c2_utils.NamedCudaScope(gpu_id):
             all_loss_gradients.update(single_gpu_build_func(model))
+    #### 返回所有的gpus的梯度
     return all_loss_gradients
 
 

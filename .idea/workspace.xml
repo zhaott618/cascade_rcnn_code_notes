@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d3f2ae51-7347-4f7e-b229-63d12b5e833c" name="Default Changelist" comment="" />
+    <list default="true" id="d3f2ae51-7347-4f7e-b229-63d12b5e833c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/detectron/modeling/FPN.py" beforeDir="false" afterPath="$PROJECT_DIR$/detectron/modeling/FPN.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/detectron/modeling/detector.py" beforeDir="false" afterPath="$PROJECT_DIR$/detectron/modeling/detector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/detectron/modeling/model_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/detectron/modeling/model_builder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/detectron/modeling/optimizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/detectron/modeling/optimizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/detectron/ops/collect_and_distribute_fpn_rpn_proposals.py" beforeDir="false" afterPath="$PROJECT_DIR$/detectron/ops/collect_and_distribute_fpn_rpn_proposals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/detectron/ops/generate_proposals.py" beforeDir="false" afterPath="$PROJECT_DIR$/detectron/ops/generate_proposals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/detectron/roi_data/cascade_rcnn.py" beforeDir="false" afterPath="$PROJECT_DIR$/detectron/roi_data/cascade_rcnn.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -9,57 +18,30 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/detectron/core/config.py">
+        <entry file="file://$PROJECT_DIR$/detectron/modeling/model_builder.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="579">
-              <caret line="691" column="34" selection-start-line="691" selection-start-column="34" selection-end-line="691" selection-end-column="34" />
+            <state relative-caret-position="287">
+              <caret line="156" column="36" selection-start-line="156" selection-start-column="36" selection-end-line="156" selection-end-column="36" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/detectron/modeling/model_builder.py">
+        <entry file="file://$PROJECT_DIR$/detectron/roi_data/cascade_rcnn.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="401">
-              <caret line="324" column="51" selection-start-line="324" selection-start-column="23" selection-end-line="324" selection-end-column="51" />
+            <state relative-caret-position="194">
+              <caret line="119" column="26" selection-start-line="119" selection-start-column="4" selection-end-line="119" selection-end-column="26" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/detectron/utils/c2.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="401">
-              <caret line="87" column="52" lean-forward="true" selection-start-line="87" selection-start-column="52" selection-end-line="87" selection-end-column="52" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file:///usr/lib/python3.5/importlib/__init__.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="329">
-              <caret line="110" column="24" lean-forward="true" selection-start-line="110" selection-start-column="24" selection-end-line="110" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/detectron/modeling/cascade_rcnn_heads.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="416">
-              <caret line="64" column="40" selection-start-line="64" selection-start-column="14" selection-end-line="64" selection-end-column="40" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/detectron/modeling/detector.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="570">
-              <caret line="315" column="67" selection-start-line="315" selection-start-column="60" selection-end-line="315" selection-end-column="67" />
+            <state relative-caret-position="330">
+              <caret line="46" column="32" selection-start-line="46" selection-start-column="4" selection-end-line="46" selection-end-column="32" />
             </state>
           </provider>
         </entry>
@@ -67,8 +49,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/detectron/ops/distribute_cascade_proposals.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="60" column="16" selection-start-line="60" selection-start-column="16" selection-end-line="60" selection-end-column="16" />
+            <state relative-caret-position="497">
+              <caret line="54" column="38" selection-start-line="54" selection-start-column="25" selection-end-line="54" selection-end-column="38" />
               <folding>
                 <element signature="e#671#709#0" expanded="true" />
               </folding>
@@ -77,10 +59,49 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/detectron/datasets/json_dataset.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="280">
+              <caret line="328" column="17" selection-start-line="328" selection-start-column="4" selection-end-line="328" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/detectron/ops/collect_and_distribute_fpn_rpn_proposals.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="703">
+              <caret line="34" column="15" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="15" />
+              <folding>
+                <element signature="e#671#709#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/detectron/modeling/detector.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="692" column="15" selection-start-line="692" selection-start-column="15" selection-end-line="692" selection-end-column="15" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/detectron/ops/generate_proposals.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="695">
+              <caret line="45" column="15" selection-start-line="45" selection-start-column="8" selection-end-line="45" selection-end-column="15" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/detectron/modeling/FPN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="389">
-              <caret line="493" column="23" lean-forward="true" selection-start-line="493" selection-start-column="23" selection-end-line="493" selection-end-column="23" />
+            <state relative-caret-position="871">
+              <caret line="493" column="24" selection-start-line="493" selection-start-column="24" selection-end-line="493" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -88,20 +109,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/detectron/ops/decode_bboxes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="594">
+            <state relative-caret-position="405">
               <caret line="31" column="39" lean-forward="true" selection-start-line="31" selection-start-column="33" selection-end-line="31" selection-end-column="39" />
               <folding>
                 <element signature="e#671#753#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/detectron/utils/boxes.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="501">
-              <caret line="150" column="44" lean-forward="true" selection-start-line="150" selection-start-column="44" selection-end-line="150" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -116,6 +128,11 @@
       <find>add_roi_cascade_head_func</find>
       <find>DistributeCascadeProposals</find>
       <find>CASCADE_</find>
+      <find>GenerateProposals</find>
+      <find>BilinearInterpolation</find>
+      <find>cascade</find>
+      <find>scales</find>
+      <find>_get_lr_change_ratio</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -124,15 +141,18 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/detectron/roi_data/cascade_rcnn.py" />
-        <option value="$PROJECT_DIR$/detectron/modeling/model_builder.py" />
         <option value="$PROJECT_DIR$/detectron/core/config.py" />
         <option value="$PROJECT_DIR$/detectron/utils/boxes.py" />
         <option value="$PROJECT_DIR$/detectron/ops/decode_bboxes.py" />
+        <option value="$PROJECT_DIR$/detectron/ops/distribute_cascade_proposals.py" />
         <option value="$PROJECT_DIR$/detectron/modeling/cascade_rcnn_heads.py" />
+        <option value="$PROJECT_DIR$/detectron/modeling/model_builder.py" />
+        <option value="$PROJECT_DIR$/detectron/modeling/optimizer.py" />
+        <option value="$PROJECT_DIR$/detectron/roi_data/cascade_rcnn.py" />
+        <option value="$PROJECT_DIR$/detectron/ops/generate_proposals.py" />
+        <option value="$PROJECT_DIR$/detectron/ops/collect_and_distribute_fpn_rpn_proposals.py" />
         <option value="$PROJECT_DIR$/detectron/modeling/detector.py" />
         <option value="$PROJECT_DIR$/detectron/modeling/FPN.py" />
-        <option value="$PROJECT_DIR$/detectron/ops/distribute_cascade_proposals.py" />
       </list>
     </option>
   </component>
@@ -147,10 +167,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="195" />
-    <option name="y" value="24" />
-    <option name="width" value="1400" />
-    <option name="height" value="1056" />
+    <option name="x" value="309" />
+    <option name="y" value="-4" />
+    <option name="width" value="1396" />
+    <option name="height" value="1026" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -225,25 +245,21 @@
       <option name="presentableId" value="Default" />
       <updated>1563375490727</updated>
       <workItem from="1563375499177" duration="10405000" />
+      <workItem from="1563416618712" duration="928000" />
+      <workItem from="1563450498089" duration="11150000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="10405000" />
+    <option name="totallyTimeSpent" value="22483000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Favorites" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="0" weight="0.3877551" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.3875069" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Database Changes" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Python Console" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32948583" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -251,42 +267,106 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="SciView" />
-      <window_info anchor="right" id="Database" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Database Changes" order="9" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
+      <window_info anchor="bottom" id="Terminal" order="11" />
+      <window_info anchor="bottom" id="Python Console" order="12" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="SciView" order="3" />
+      <window_info anchor="right" id="Database" order="4" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/detectron/roi_data/cascade_rcnn.py">
+    <entry file="file://$PROJECT_DIR$/detectron/core/config.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="131" column="43" selection-start-line="131" selection-start-column="33" selection-end-line="131" selection-end-column="43" />
+        <state relative-caret-position="10125">
+          <caret line="691" column="34" selection-start-line="691" selection-start-column="34" selection-end-line="691" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/detectron/utils/c2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1080">
+          <caret line="87" column="52" lean-forward="true" selection-start-line="87" selection-start-column="52" selection-end-line="87" selection-end-column="52" />
         </state>
       </provider>
     </entry>
     <entry file="file:///usr/lib/python3.5/importlib/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="329">
+        <state relative-caret-position="1635">
           <caret line="110" column="24" lean-forward="true" selection-start-line="110" selection-start-column="24" selection-end-line="110" selection-end-column="24" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/detectron/modeling/cascade_rcnn_heads.py">
+    <entry file="file://$PROJECT_DIR$/detectron/utils/boxes.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
-          <caret line="64" column="40" selection-start-line="64" selection-start-column="14" selection-end-line="64" selection-end-column="40" />
+        <state relative-caret-position="2115">
+          <caret line="150" column="44" lean-forward="true" selection-start-line="150" selection-start-column="44" selection-end-line="150" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharm2019.1/system/python_stubs/-1247971764/builtins.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="393">
+          <caret line="2819" column="80" lean-forward="true" selection-start-line="2819" selection-start-column="80" selection-end-line="2819" selection-end-column="80" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/detectron/core/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2752" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/detectron/core/rpn_generator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-86" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/detectron/modeling/optimizer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="508">
+          <caret line="53" column="42" selection-start-line="53" selection-start-column="42" selection-end-line="53" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/detectron/ops/decode_bboxes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="31" column="39" lean-forward="true" selection-start-line="31" selection-start-column="33" selection-end-line="31" selection-end-column="39" />
+          <folding>
+            <element signature="e#671#753#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/detectron/ops/distribute_cascade_proposals.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="60" column="16" selection-start-line="60" selection-start-column="16" selection-end-line="60" selection-end-column="16" />
+        <state relative-caret-position="497">
+          <caret line="54" column="38" selection-start-line="54" selection-start-column="25" selection-end-line="54" selection-end-column="38" />
+          <folding>
+            <element signature="e#671#709#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/detectron/datasets/json_dataset.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="280">
+          <caret line="328" column="17" selection-start-line="328" selection-start-column="4" selection-end-line="328" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/detectron/ops/collect_and_distribute_fpn_rpn_proposals.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="703">
+          <caret line="34" column="15" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="15" />
           <folding>
             <element signature="e#671#709#0" expanded="true" />
           </folding>
@@ -295,53 +375,43 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/detectron/modeling/detector.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="315" column="67" selection-start-line="315" selection-start-column="60" selection-end-line="315" selection-end-column="67" />
+        <state relative-caret-position="180">
+          <caret line="692" column="15" selection-start-line="692" selection-start-column="15" selection-end-line="692" selection-end-column="15" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/detectron/ops/decode_bboxes.py">
+    <entry file="file://$PROJECT_DIR$/detectron/ops/generate_proposals.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="594">
-          <caret line="31" column="39" lean-forward="true" selection-start-line="31" selection-start-column="33" selection-end-line="31" selection-end-column="39" />
-          <folding>
-            <element signature="e#671#753#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="695">
+          <caret line="45" column="15" selection-start-line="45" selection-start-column="8" selection-end-line="45" selection-end-column="15" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/detectron/modeling/FPN.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="389">
-          <caret line="493" column="23" lean-forward="true" selection-start-line="493" selection-start-column="23" selection-end-line="493" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/detectron/utils/boxes.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="501">
-          <caret line="150" column="44" lean-forward="true" selection-start-line="150" selection-start-column="44" selection-end-line="150" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/detectron/core/config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="579">
-          <caret line="691" column="34" selection-start-line="691" selection-start-column="34" selection-end-line="691" selection-end-column="34" />
+        <state relative-caret-position="871">
+          <caret line="493" column="24" selection-start-line="493" selection-start-column="24" selection-end-line="493" selection-end-column="24" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/detectron/modeling/model_builder.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="401">
-          <caret line="324" column="51" selection-start-line="324" selection-start-column="23" selection-end-line="324" selection-end-column="51" />
+        <state relative-caret-position="287">
+          <caret line="156" column="36" selection-start-line="156" selection-start-column="36" selection-end-line="156" selection-end-column="36" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/detectron/utils/c2.py">
+    <entry file="file://$PROJECT_DIR$/detectron/roi_data/cascade_rcnn.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="401">
-          <caret line="87" column="52" lean-forward="true" selection-start-line="87" selection-start-column="52" selection-end-line="87" selection-end-column="52" />
+        <state relative-caret-position="194">
+          <caret line="119" column="26" selection-start-line="119" selection-start-column="4" selection-end-line="119" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/detectron/modeling/cascade_rcnn_heads.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="46" column="32" selection-start-line="46" selection-start-column="4" selection-end-line="46" selection-end-column="32" />
         </state>
       </provider>
     </entry>

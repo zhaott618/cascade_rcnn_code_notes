@@ -491,7 +491,7 @@ def add_fpn_rpn_losses(model):
 # ---------------------------------------------------------------------------- #
 
 def map_rois_to_fpn_levels(rois, k_min, k_max):
-    ###决定每个roi应该属于哪个lvl
+    ###决定每个roi应该属于哪个lvls
     """Determine which FPN level each RoI in a set of RoIs should map to based
     on the heuristic in the FPN paper.
     """

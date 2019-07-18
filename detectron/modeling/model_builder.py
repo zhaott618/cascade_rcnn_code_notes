@@ -231,10 +231,15 @@ def build_generic_detection_model(
                 model, add_roi_box_head_func, blob_conv, dim_conv,
                 spatial_scale_conv
             )
+
+            ### 如果使用cascade rcnn网络
             if cfg.MODEL.CASCADE_ON:
                 # Add the Cascade R-CNN head
                 num_stage = cfg.CASCADE_RCNN.NUM_STAGE
                 _check_for_cascade_rcnn()
+
+                ### 这里是对每一个stage获得
+
                 for stage in range(2, num_stage + 1):
                     stage_name = '_{}'.format(stage)
                     head_loss_gradients['box' + stage_name] = _add_cascade_rcnn_head(
@@ -256,15 +261,18 @@ def build_generic_detection_model(
                 spatial_scale_conv
             )
 
+        ### 训练阶段根据head_loss_gradients更新参数
         if model.train:
             loss_gradients = {}
             for lg in head_loss_gradients.values():
                 if lg is not None:
+                    ### 用lg中的参数更新loss_gradients
                     loss_gradients.update(lg)
             return loss_gradients
         else:
             return None
 
+    ### _single_gpu_build_func在函数内定义，类似于函数指针 ？？？
     optim.build_data_parallel_model(model, _single_gpu_build_func)
     return model
 

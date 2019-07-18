@@ -84,6 +84,8 @@ class DetectionModelHelper(cnn.CNNModelHelper):
             )]
 
     def AffineChannel(self, blob_in, blob_out, dim, inplace=False):
+        ###  替代BN的affine transformation(因为此时minibatch尺寸太小)
+        ###  可用于节省内存
         """Affine transformation to replace BN in networks where BN cannot be
         used (e.g., because the minibatch size is too small).
 
@@ -109,16 +111,27 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         else:
             return self.net.AffineChannel([blob_in, scale, bias], blob_out)
 
+    #### 这个函数相当相当重要，它相当于“极简faster rcnn实现中所描述的proposalcreator”
+    #### 从20000个anchors选择2000（train）或300（inference）个作为proposals输入fast rcnn
     def GenerateProposals(self, blobs_in, blobs_out, anchors, spatial_scale):
         """Op for generating RPN porposals.
 
         blobs_in:
+
+            ####'rpn_cls_probs': 4D tensor of shape (N, A, H, W)，每个anchor
+            ####对应一个置信度
           - 'rpn_cls_probs': 4D tensor of shape (N, A, H, W), where N is the
             number of minibatch images, A is the number of anchors per
             locations, and (H, W) is the spatial size of the prediction grid.
             Each value represents a "probability of object" rating in [0, 1].
+
+            #### 'rpn_bbox_pred': 4D tensor of shape (N, 4 * A, H, W)为bbox回归参数
+            #### 每个anchor对应4个值
           - 'rpn_bbox_pred': 4D tensor of shape (N, 4 * A, H, W) of predicted
             deltas for transformation anchor boxes into RPN proposals.
+
+            #### im_info的shape为(N, 3)代表每张输入图片的 [height, width, scale]，scale用来
+            #### 将原图尺寸变换到网络输入尺寸
           - 'im_info': 2D tensor of shape (N, 3) where the three columns encode
             the input image's [height, width, scale]. Height and width are
             for the input to the network, not the original image; scale is the
@@ -126,27 +139,35 @@ class DetectionModelHelper(cnn.CNNModelHelper):
             size.
 
         blobs_out:
+            ####rpn_rois中bbox的尺寸是相对于网络输入（即经过scaled的原图尺寸），因此
+            #### proposals尺寸要乘上scale以恢复到原图尺寸
           - 'rpn_rois': 2D tensor of shape (R, 5), for R RPN proposals where the
             five columns encode [batch ind, x1, y1, x2, y2]. The boxes are
             w.r.t. the network input, which is a *scaled* version of the
             original image; these proposals must be scaled by 1 / scale (where
             scale comes from im_info; see above) to transform it back to the
             original input image coordinate system.
+            ####rpn_roi_probs为置信度
           - 'rpn_roi_probs': 1D tensor of objectness probability scores
             (extracted from rpn_cls_probs; see above).
         """
         name = 'GenerateProposalsOp:' + ','.join([str(b) for b in blobs_in])
         # spatial_scale passed to the Python op is only used in convert_pkl_to_pb
+
+        #### 网络forward
         self.net.Python(
             GenerateProposalsOp(anchors, spatial_scale, self.train).forward
         )(blobs_in, blobs_out, name=name, spatial_scale=spatial_scale)
+
         return blobs_out
 
     def GenerateProposalLabels(self, blobs_in):
+        #### 该函数用于为rpn的proposals产生训练标签，用于rpn与fast rcnn端到端训练
         """Op for generating training labels for RPN proposals. This is used
         when training RPN jointly with Fast/Mask R-CNN (as in end-to-end
         Faster R-CNN training).
 
+        ####网络输入：
         blobs_in:
           - 'rpn_rois': 2D tensor of RPN proposals output by GenerateProposals
           - 'roidb': roidb entries that will be labeled
@@ -174,6 +195,10 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         )
         return blobs_out
 
+    ### 这是一个核心函数，用于merge在多个fpn lvls产生的rpn proposals并将这些proposals
+    ### 分配到它们所对应的合适的fpn lvls上
+    ### 在某一个fpn lvl的一个anchor有可能会预测出一个映射到其他lvl上的ROI，因此需要对proposals
+    ### 进行重新分配
     def CollectAndDistributeFpnRpnProposals(self):
         """Merge RPN proposals generated at multiple FPN levels and then
         distribute those proposals to their appropriate FPN levels. An anchor
@@ -182,16 +207,20 @@ class DetectionModelHelper(cnn.CNNModelHelper):
 
         This function assumes standard blob names for input and output blobs.
 
+        ####输入blobs为各个lvl的rpn产生的rois以及对应的概率（即每个ROI包含物体的置信度）
         Input blobs: [rpn_rois_fpn<min>, ..., rpn_rois_fpn<max>,
                       rpn_roi_probs_fpn<min>, ..., rpn_roi_probs_fpn<max>]
           - rpn_rois_fpn<i> are the RPN proposals for FPN level i; see rpn_rois
             documentation from GenerateProposals.
+
           - rpn_roi_probs_fpn<i> are the RPN objectness probabilities for FPN
             level i; see rpn_roi_probs documentation from GenerateProposals.
 
+        #### 训练阶段input_blob 还会包含 [roidb, im_info]
         If used during training, then the input blobs will also include:
           [roidb, im_info] (see GenerateProposalLabels).
 
+        #### 输出的blobs为
         Output blobs: [rois_fpn<min>, ..., rois_rpn<max>, rois,
                        rois_idx_restore]
           - rois_fpn<i> are the RPN proposals for FPN level i
@@ -210,23 +239,29 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         score_names = [
             'rpn_roi_probs_fpn' + str(l) for l in range(k_min, k_max + 1)
         ]
+        ### 准备输入数据
         blobs_in = rois_names + score_names
         if self.train:
             blobs_in += ['roidb', 'im_info']
+        ### ScopedBlobReference不知道干嘛的，blobs_in为经过处理的每一个输入元素
+        ### 构成的集合
         blobs_in = [core.ScopedBlobReference(b) for b in blobs_in]
         name = 'CollectAndDistributeFpnRpnProposalsOp:' + ','.join(
             [str(b) for b in blobs_in]
         )
 
         # Prepare output blobs
+        ### 准备输出数据blobs
         blobs_out = fast_rcnn_roi_data.get_fast_rcnn_blob_names(
             is_training=self.train
         )
         blobs_out = [core.ScopedBlobReference(b) for b in blobs_out]
 
+        ### 根据输入和输出数据进行网络前向传播
         outputs = self.net.Python(
             CollectAndDistributeFpnRpnProposalsOp(self.train).forward
         )(blobs_in, blobs_out, name=name)
+
 
         return outputs
 
@@ -319,6 +354,7 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         return outputs
 
     def DropoutIfTraining(self, blob_in, dropout_rate):
+        ####增加dropout作用
         """Add dropout to blob_in if the model is in training mode and
         dropout_rate is > 0."""
         blob_out = blob_in
@@ -328,6 +364,7 @@ class DetectionModelHelper(cnn.CNNModelHelper):
             )
         return blob_out
 
+    ###选择ROIpooling还是roialign等方式
     def RoIFeatureTransform(
         self,
         blobs_in,
@@ -460,11 +497,12 @@ class DetectionModelHelper(cnn.CNNModelHelper):
             blobs_in, blob_out, order=self.order, **kwargs
         )
 
+    ###双线性插值函数
     def BilinearInterpolation(
         self, blob_in, blob_out, dim_in, dim_out, up_scale
     ):
         """Bilinear interpolation in space of scale.
-
+        ####双线性差值，可用于上采样
         Takes input of NxKxHxW and outputs NxKx(sH)x(sW), where s:= up_scale
 
         Adapted from the CVPR'15 FCN code.
@@ -506,6 +544,7 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         self.do_not_update_params.append(self.biases[-1])
         return blob
 
+    ####convaffine意味着在affinechannel（用于在网络fine tune时代替BN）后增加一个卷积操作
     def ConvAffine(  # args in the same order of Conv()
         self, blob_in, prefix, dim_in, dim_out, kernel, stride, pad,
         group=1, dilation=1,
@@ -526,16 +565,19 @@ class DetectionModelHelper(cnn.CNNModelHelper):
             stride=stride,
             pad=pad,
             group=group,
+            ###指定是否为空洞卷积
             dilation=dilation,
             weight_init=weight_init,
             bias_init=bias_init,
             no_bias=1
         )
+        ### 进行AffineChannel
         blob_out = self.AffineChannel(
             conv_blob, prefix + suffix, dim=dim_out, inplace=inplace
         )
         return blob_out
 
+    ###用于在GN操作后添加卷积操作（包含可学习的参数：scale/bias (gamma/beta)）
     def ConvGN(  # args in the same order of Conv()
         self, blob_in, prefix, dim_in, dim_out, kernel, stride, pad,
         group_gn,  # num of groups in gn
@@ -578,6 +620,7 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         self.gn_params.append(self.params[-2])  # add gn's scale to list
         return blob_out
 
+    ####用于共享权重and/or偏置的gn op
     def SpatialGNShared(
         self,
         blob_in,
@@ -656,6 +699,7 @@ class DetectionModelHelper(cnn.CNNModelHelper):
                 ratio > cfg.SOLVER.SCALE_MOMENTUM_THRESHOLD:
             self._CorrectMomentum(new_lr / cur_lr)
 
+    ####采用动量法更新参数
     def _CorrectMomentum(self, correction):
         """The MomentumSGDUpdate op implements the update V as
 

@@ -26,7 +26,7 @@ import numpy as np
 from detectron.core.config import cfg
 import detectron.utils.boxes as box_utils
 
-
+#### generateproposals op类
 class GenerateProposalsOp(object):
     """Output object detection proposals by applying estimated bounding-box
     transformations to a set of regular boxes (called "anchors").
@@ -42,19 +42,23 @@ class GenerateProposalsOp(object):
         self._train = train
         self._reg_weights = reg_weights
 
+    #### 描述如何产生rpn的proposals
     def forward(self, inputs, outputs):
         """See modeling.detector.GenerateProposals for inputs/outputs
         documentation.
+
+
+
         """
         # 1. for each location i in a (H, W) grid:
         #      generate A anchor boxes centered on cell i
         #      apply predicted bbox deltas to each of the A anchors at cell i
         # 2. clip predicted boxes to image
-        # 3. remove predicted boxes with either height or width < threshold
-        # 4. sort all (proposal, score) pairs by score from highest to lowest
-        # 5. take the top pre_nms_topN proposals before NMS
-        # 6. apply NMS with a loose threshold (0.7) to the remaining proposals
-        # 7. take after_nms_topN proposals after NMS
+        # 3. remove predicted boxes with either height or width < threshold（移除所有w或h小于thresh的bbox）
+        # 4. sort all (proposal, score) pairs by score from highest to lowest（按置信度对proposals排序）
+        # 5. take the top pre_nms_topN proposals before NMS(在NMS前按照分数直接选取前pre_nms_topN proposals)
+        # 6. apply NMS with a loose threshold (0.7) to the remaining proposals（对剩余的proposals做NMS）
+        # 7. take after_nms_topN proposals after NMS（选取after_nms_topN个proposals）
         # 8. return the top proposals
 
         # predicted probability of fg object for each RPN anchor
@@ -116,6 +120,8 @@ class GenerateProposalsOp(object):
         post_nms_topN = cfg[cfg_key].RPN_POST_NMS_TOP_N
         nms_thresh = cfg[cfg_key].RPN_NMS_THRESH
         min_size = cfg[cfg_key].RPN_MIN_SIZE
+
+        ####改变预测的回归参数的形状由(4 * A, H, W)--->(H * W * A, 4)
         # Transpose and reshape predicted bbox transformations to get them
         # into the same order as the anchors:
         #   - bbox deltas will be (4 * A, H, W) format from conv output
@@ -124,6 +130,7 @@ class GenerateProposalsOp(object):
         #     in slowest to fastest order to match the enumerated anchors
         bbox_deltas = bbox_deltas.transpose((1, 2, 0)).reshape((-1, 4))
 
+        ####同理，改变输出分数的shape由(A, H, W)---->(H * W * A, 1)
         # Same story for the scores:
         #   - scores are (A, H, W) format from conv output
         #   - transpose to (H, W, A)
@@ -151,7 +158,9 @@ class GenerateProposalsOp(object):
         proposals = box_utils.bbox_transform(all_anchors, bbox_deltas, self._reg_weights)
 
         # 2. clip proposals to image (may result in proposals with zero area
-        # that will be removed in the next step)
+        # that will be removed in the next step)----->值将proposals clip到image
+        #(可能会导致面积为0)
+        # im_info[:2]代表img_w, img_h, scale
         proposals = box_utils.clip_tiled_boxes(proposals, im_info[:2])
 
         # 3. remove predicted boxes with either height or width < min_size

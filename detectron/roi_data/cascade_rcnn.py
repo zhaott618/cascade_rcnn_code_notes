@@ -36,18 +36,28 @@ logger = logging.getLogger(__name__)
 
 
 def get_cascade_rcnn_blob_names(stage, is_training=True):
+    #### 这个函数定义了很多blob_names
+    #### 输入为rois blob, shape为（R, 5）
     """Cascade R-CNN blob names."""
+
     # rois blob: holds R regions of interest, each is a 5-tuple
     # (batch_idx, x1, y1, x2, y2) specifying an image batch index and a
     # rectangle (x1, y1, x2, y2)
     stage_name = "_{}".format(stage)
     blob_names = ["rois" + stage_name]
+
+    #### 训练阶段共包含以下 blob_names: labels_int32, bbox_targets,
+    #### , ETC
     if is_training:
         blob_names += ["labels_int32" + stage_name]
         blob_names += ["bbox_targets" + stage_name]
+        #### 以下这两项为是否对于正样本（pi*==1）和负样本(==0)的权重
+        #### 即只对正样本计算回归损失
         blob_names += ["bbox_inside_weights" + stage_name]
         blob_names += ["bbox_outside_weights" + stage_name]
         blob_names += ["mapped_gt_boxes" + stage_name]
+
+        ###定义是否使用mask分支
     if is_training and cfg.MODEL.MASK_ON and cfg.MRCNN.AT_STAGE == stage:
         # 'mask_rois': RoIs sampled for training the mask prediction branch.
         # Shape is (#masks, 5) in format (batch_idx, x1, y1, x2, y2).
@@ -61,6 +71,8 @@ def get_cascade_rcnn_blob_names(stage, is_training=True):
         # 'mask_rois'. Shape is (#fg, M * M) where M is the ground truth
         # mask size.
         blob_names += ["masks_int32"]
+
+        #### 定义是否使用keypoints分支
     if is_training and cfg.MODEL.KEYPOINTS_ON and cfg.KRCNN.AT_STAGE == stage:
         # 'keypoint_rois': RoIs sampled for training the keypoint prediction
         # branch. Shape is (#instances, 5) in format (batch_idx, x1, y1, x2,
@@ -77,15 +89,22 @@ def get_cascade_rcnn_blob_names(stage, is_training=True):
         # 'keypoint_loss_normalizer': optional normalization factor to use if
         # cfg.KRCNN.NORMALIZE_BY_VISIBLE_KEYPOINTS is False.
         blob_names += ['keypoint_loss_normalizer']
+
+        #### 是否使用fpn架构
     if cfg.FPN.FPN_ON and cfg.FPN.MULTILEVEL_ROIS:
         # Support for FPN multi-level rois without bbox reg isn't
         # implemented (... and may never be implemented)
         k_max = cfg.FPN.ROI_MAX_LEVEL
         k_min = cfg.FPN.ROI_MIN_LEVEL
         # Same format as rois blob, but one per FPN level
+
+        #### 对于每一个stage和每一个lvl添加rois blob，shape均为（R, 5）
         for lvl in range(k_min, k_max + 1):
             blob_names += ["rois" + stage_name + "_fpn" + str(lvl)]
         blob_names += ["rois" + stage_name + "_idx_restore_int32"]
+
+        #### 训练阶段若有mask或keypoints分支，添加新的blob_names
+        #### 并且不用区分stage
         if is_training:
             if cfg.MODEL.MASK_ON and cfg.MRCNN.AT_STAGE == stage:
                 for lvl in range(k_min, k_max + 1):
@@ -125,7 +144,7 @@ def add_cascade_rcnn_blobs(blobs, im_scales, roidb, stage):
 
 
 def _sample_rois(roidb, im_scale, batch_idx, stage):
-    #随机产生包含前景和背景的正负样本 rois集
+    # 随机产生包含前景和背景的正负样本，即rois集合
     """Generate a random sample of RoIs comprising foreground and background
     examples.
     """
@@ -133,32 +152,51 @@ def _sample_rois(roidb, im_scale, batch_idx, stage):
     bg_thresh_hi = cfg.CASCADE_RCNN.BG_THRESHS_HI[stage - 1]
     bg_thresh_lo = cfg.CASCADE_RCNN.BG_THRESHS_LO[stage - 1]
 
+    #### 这个变量很关键：定义了每一个roi与所有gt-bboxes所对应的最大的iou ???
     max_overlaps = roidb["max_overlaps"]
 
     # Select foreground RoIs as those with >= FG_THRESH overlap
+    #### 选择最大iou高于fg_thresh的那些rois，作为前景的indexes-->fg_inds
     fg_inds = np.where(max_overlaps >= fg_thresh)[0]
+    #### 一张img所包含的所有fg_rois数量
     fg_rois_per_this_image = fg_inds.size
 
     # Select background RoIs as those within [BG_THRESH_LO, BG_THRESH_HI)
+    #### 选择那些对应的最大iou值介于（bg_thesh_lo, bg_thresh_hi）的那些rois，采样为背景
     bg_inds = np.where(
         (max_overlaps < bg_thresh_hi) & (max_overlaps >= bg_thresh_lo)
     )[0]
 
     # The indices that we're selecting (both fg and bg)
+    #### keep_inds为我们将要采样的样本的索引列表（包括正，负样本）
     keep_inds = np.append(fg_inds, bg_inds)
+
+
     # Label is the class each RoI has max overlap with
+    #### sampled_labels即为roidb中采样的rois所对应的标签值labels
     sampled_labels = roidb["max_classes"][keep_inds]
+    #### 将采样的负样本所对应的标签值都置为0
     sampled_labels[fg_rois_per_this_image:] = 0  # Label bg RoIs with class 0
+    #### sampled_boxes即为roidb中采样的所有正负样本，shape为(, 4)
     sampled_boxes = roidb["boxes"][keep_inds]
 
+    #### 得到roidb中所有的gt_bbox的index
     gt_inds = np.where(roidb["gt_classes"] > 0)[0]
+    #### 得到gt_bbox构成的集合，shape为(, 4)
     gt_boxes = roidb["boxes"][gt_inds, :]
+    #### 这个有点不太理解了，gt_assignments为所有采样的作为正样本的rois所对应的gt_bboxes集合
     gt_assignments = gt_inds[roidb["box_to_gt_ind_map"][keep_inds]]
 
     # [mapped_gt_boxes, max_overlaps]
+    #### 初始化mapped_gt_boxes变量，保存所有采样的rois所对应的gt_bboxes的坐标（
+    # 疑问：对于负样本也有gt_bbox??? ）
     mapped_gt_boxes = blob_utils.zeros((keep_inds.size, 5))
+    #### mapped_gt_boxes
+    #### 将原图对应的
     mapped_gt_boxes[:, :4] = gt_boxes[gt_assignments, :] * im_scale
     mapped_gt_boxes[:, 4] = max_overlaps[keep_inds]
+
+    ####对于负样本所对应的行（fg_rois_per_this_image之后的）的数据，全部置为0
     mapped_gt_boxes[fg_rois_per_this_image:, :] = 0
 
     if "bbox_targets" not in roidb:
