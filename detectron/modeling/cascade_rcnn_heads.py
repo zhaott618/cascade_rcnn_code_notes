@@ -102,17 +102,23 @@ def add_cascade_rcnn_outputs(model, blob_in, dim, stage):
 
 
 def add_cascade_rcnn_losses(model, stage):
+    ####增加损失项：用于roi分类和边界框回归
     """Add losses for RoI classification and bounding box regression."""
+
     stage_name = "_{}".format(stage)
+    ####
     if cfg.CASCADE_RCNN.SCALE_LOSS:
+        ####loss_scalar这一项好像定义了每一阶段的训练损失占总损失的比重
         loss_scalar = cfg.CASCADE_RCNN.STAGE_WEIGHTS[stage - 1]
     else:
         loss_scalar = 1.0
+    ### 获得该stage的分类分数和分类损失，先经过softmax，再做损失
     cls_prob, loss_cls = model.net.SoftmaxWithLoss(
         ["cls_score" + stage_name, "labels_int32" + stage_name],
         ["cls_prob" + stage_name, "loss_cls" + stage_name],
         scale=model.GetLossScale() * loss_scalar,
     )
+    ### 得到bbox回归损失，为smoothl1-loss
     loss_bbox = model.net.SmoothL1Loss(
         [
             "bbox_pred" + stage_name,
@@ -123,14 +129,20 @@ def add_cascade_rcnn_losses(model, stage):
         "loss_bbox" + stage_name,
         scale=model.GetLossScale() * loss_scalar,
     )
+    ### 由两项损失计算损失梯度
     loss_gradients = blob_utils.get_loss_gradients(model, [loss_cls, loss_bbox])
+    ### 得到模型精度
     model.Accuracy(
         ["cls_prob" + stage_name, "labels_int32" + stage_name],
         "accuracy_cls" + stage_name,
     )
+    ### 对模型增加损失（分类和回归损失）
     model.AddLosses(["loss_cls" + stage_name, "loss_bbox" + stage_name])
+    ### 对模型增加指标：分类精确度
     model.AddMetrics("accuracy_cls" + stage_name)
+    ###得到该阶段bbox回归参数的权重
     bbox_reg_weights = cfg.CASCADE_RCNN.BBOX_REG_WEIGHTS[stage - 1]
+    ###对模型增加bbox回归精度
     model.AddBBoxAccuracy(
         [
             "bbox_pred" + stage_name,
@@ -141,6 +153,7 @@ def add_cascade_rcnn_losses(model, stage):
         ["bbox_iou" + stage_name, "bbox_iou" + stage_name + "_pre"],
         bbox_reg_weights,
     )
+    ###对模型增加指标：Bbox iou值
     model.AddMetrics(["bbox_iou" + stage_name, "bbox_iou" + stage_name + "_pre"])
     return loss_gradients
 
@@ -149,7 +162,7 @@ def add_cascade_rcnn_losses(model, stage):
 # Box heads
 # ---------------------------------------------------------------------------- #
 
-
+####到此
 def add_roi_2mlp_head(model, blob_in, dim_in, spatial_scale, stage):
     """Add a ReLU MLP with two hidden layers."""
     stage_name = "_{}".format(stage)

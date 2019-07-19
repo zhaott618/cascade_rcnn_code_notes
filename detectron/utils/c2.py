@@ -50,15 +50,23 @@ def import_custom_ops():
     dyndep.InitOpsLibrary(custom_ops_lib)
 
 
+####创建一个后缀网络
 def SuffixNet(name, net, prefix_len, outputs):
+
+    ### 返回一个后缀net，其为除去原net的前prefix_len数量个ops得到的一个新的net
+    ### 而ouputs中的数据blobs被认为是外部的输出blobs
+
     """Returns a new Net from the given Net (`net`) that includes only the ops
     after removing the first `prefix_len` number of ops. The new Net is thus a
     suffix of `net`. Blobs listed in `outputs` are registered as external output
     blobs.
     """
+    ### 保证outputs必须得是一个BlobReference或是一个BlobReference的值构成的list
     outputs = BlobReferenceList(outputs)
+
     for output in outputs:
         assert net.BlobIsDefined(output)
+
     new_net = net.Clone(name)
 
     del new_net.Proto().op[:]
@@ -66,28 +74,40 @@ def SuffixNet(name, net, prefix_len, outputs):
     del new_net.Proto().external_output[:]
 
     # Add suffix ops
+    ### 对新网络复制原网络的后部分ops, 即op[prefix_len:]部分
     new_net.Proto().op.extend(net.Proto().op[prefix_len:])
+    ### 增加外部的输入blobs
     # Add external input blobs
     # Treat any undefined blobs as external inputs
+    ### 对于新net所有的ops, 将这些ops对应的输入构成的list作为
+    # 新的输入（如果这些输入没有在新net中被定义的话）
     input_names = [
         i for op in new_net.Proto().op for i in op.input
         if not new_net.BlobIsDefined(i)]
+    ###把上述得到的输入值构成的list作为新net的external_input
     new_net.Proto().external_input.extend(input_names)
     # Add external output blobs
+    ###对于新网络增加external_ouputs(即原net的所有输出)
     output_names = [str(o) for o in outputs]
     new_net.Proto().external_output.extend(output_names)
     return new_net, [new_net.GetBlobRef(o) for o in output_names]
 
 
 def BlobReferenceList(blob_ref_or_list):
+    #### 保证参数以一个BlobReferences列表的形式返回
+
     """Ensure that the argument is returned as a list of BlobReferences."""
+    #### isinstance返回blob_ref_or_list是否是BlobReference的一个类或子类
     if isinstance(blob_ref_or_list, core.BlobReference):
         return [blob_ref_or_list]
+
+    #### 保证blob_ref_or_list的每一个元素必须都是core.BlobReference的一个类或子类
     elif type(blob_ref_or_list) in (list, tuple):
         for b in blob_ref_or_list:
             assert isinstance(b, core.BlobReference)
         return blob_ref_or_list
     else:
+        #### 就是这个意思
         raise TypeError(
             'blob_ref_or_list must be a BlobReference or a list/tuple of '
             'BlobReferences'
@@ -95,9 +115,13 @@ def BlobReferenceList(blob_ref_or_list):
 
 
 def UnscopeName(possibly_scoped_name):
+
     """Remove any name scoping from a (possibly) scoped name. For example,
     convert the name 'gpu_0/foo' to 'foo'."""
+
+    #### 对某个scope范围内的变量移除scope
     assert isinstance(possibly_scoped_name, string_types)
+    #### 返回去除了scope的变量names，即对于gpu_0/foo---->foo
     return possibly_scoped_name[
         possibly_scoped_name.rfind(scope._NAMESCOPE_SEPARATOR) + 1:]
 

@@ -722,6 +722,7 @@ class DetectionModelHelper(cnn.CNNModelHelper):
                         scale=correction)
                     workspace.RunOperatorOnce(op)
 
+    ####神奇的函数，用来在distributed data parallel setting中使用？？？
     def GetLossScale(self):
         """Allow a way to configure the loss scale dynamically.
 
@@ -730,20 +731,36 @@ class DetectionModelHelper(cnn.CNNModelHelper):
         return 1.0 / cfg.NUM_GPUS
 
     def AddLosses(self, losses):
+        ###isinstance函数表示losses是否是list的一个类或子类
         if not isinstance(losses, list):
             losses = [losses]
         # Conversion to str allows losses to include BlobReferences
+        ####BlobReferences和unscopename这两项始终没懂
+        ####答案--->UnscopeName函数作用是把原变量去除scope，在这里
+        ####即是把losses中的每一项都去除scope
         losses = [c2_utils.UnscopeName(str(l)) for l in losses]
+        ####为什么要self.losses+losses ????
         self.losses = list(set(self.losses + losses))
 
+    ####为模型增加指标
     def AddMetrics(self, metrics):
+        ###
         if not isinstance(metrics, list):
             metrics = [metrics]
+        ####为什么要在这里使用加？？？
         self.metrics = list(set(self.metrics + metrics))
 
+    ####终于到了激动人心的时刻---->针对cascade-rcnn的op！！！
     def AddBBoxAccuracy(self, blobs_in, blobs_out, bbox_reg_weights):
         """Op for bbox IoU accuracy, by Zhaowei Cai for Cascade R-CNN.
+        函数输入：
+          - 预测的回归参数，shape为（R, 4*类别数），R为proposals数，即对每一个
+            proposals都预测其对于每一个类别的回归参数
+          - rois即proposals, shape为（R, 5）
 
+    ????? - labels:这个标签究竟指gt还是预测的proposals的标签？ 答案--->指gt bbox
+
+          - 这R个proposals对应的R个gt bbox, shape为（R, 5）
         blobs_in: ['bbox_pred', 'rois', 'labels', 'mapped_gt_boxes']
           - 'bbox_pred': 2D tensor of shape (R, 4 * C), predicted bbox deltas
             for transformation previous boxes into next boxes.
@@ -754,10 +771,14 @@ class DetectionModelHelper(cnn.CNNModelHelper):
           - 'mapped_gt_boxes': 2D tensor of shape (R, 5), the corresponding gt
             boxes where the five columns encode [x1, y1, x2, y2, IoU].
 
+        函数输出：
+          - bbox预测之后的平均IOU
+          - bbox预测之前的平均IOU
         blobs_out:
           - 'bbox_iou': mean IoU after bbox prediction.
           - 'bbox_iou_pre': mean IoU before bbox prediction.
         """
+        ####bbox_reg_weights为bbox回归权重
         name = 'BBoxAccuracyOp:' + ','.join([str(b) for b in blobs_in])
         self.net.Python(BBoxAccuracyOp(bbox_reg_weights).forward)(
             blobs_in, blobs_out, name=name

@@ -41,6 +41,7 @@ def bbox_overlaps(
     -------
     overlaps: (N, K) ndarray of overlap between boxes and query_boxes
     """
+    ############意思是返回一个表，rows为bbox, cols为gt_bbox
     cdef unsigned int N = boxes.shape[0]
     cdef unsigned int K = query_boxes.shape[0]
     cdef np.ndarray[DTYPE_t, ndim=2] overlaps = np.zeros((N, K), dtype=DTYPE)

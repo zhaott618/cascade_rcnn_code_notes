@@ -25,6 +25,9 @@
 specify the bottom-right box corner. Boxes from external sources, e.g.,
 datasets, may be in other formats (such as [x, y, w, h]) and require conversion.
 
+####这里描述了为什么要用诡异的+1？？？？
+####原因是旧式的目标检测采用整数像素索引，而当只有一个像素时（x2 = x1 and y2 = y1），bbox长宽均为1，因此需要+1
+####如果采用float索引数据集，则可以不+1
 This module uses a convention that may seem strange at first: the width of a box
 is computed as x2 - x1 + 1 (likewise for height). The "+ 1" dates back to old
 object detection days when the coordinates were integer pixel indices, rather
@@ -34,6 +37,7 @@ hence requiring the "+ 1". Now, most datasets will likely provide boxes with
 floating point coordinates and the width should be more reasonably computed as
 x2 - x1.
 
+####实际上+1或不加都ok
 In practice, as long as a model is trained and tested with a consistent
 convention either decision seems to be ok (at least in our experience on COCO).
 Since we have a long history of training models with the "+ 1" convention, we
@@ -121,6 +125,7 @@ def clip_boxes_to_image(boxes, height, width):
 
 
 def clip_xyxy_to_image(x1, y1, x2, y2, height, width):
+    ####把给定w, h的图像根据坐标裁剪
     """Clip coordinates to an image with the given height and width."""
     x1 = np.minimum(width - 1., np.maximum(0., x1))
     y1 = np.minimum(height - 1., np.maximum(0., y1))
@@ -130,6 +135,7 @@ def clip_xyxy_to_image(x1, y1, x2, y2, height, width):
 
 
 def clip_tiled_boxes(boxes, im_shape):
+    ### 调整超出图像边界的bbox
     """Clip boxes to image boundaries. im_shape is [height, width] and boxes
     has shape (N, 4 * num_tiled_boxes)."""
     assert boxes.shape[1] % 4 == 0, \
@@ -148,7 +154,7 @@ def clip_tiled_boxes(boxes, im_shape):
 
 
 def bbox_transform(boxes, deltas, weights=(1.0, 1.0, 1.0, 1.0)):
-    ###该函数用于将proposals映射到 预测的gt boxes（使用回归值及其权重）
+    ###该函数用于将proposals通过预测的deltas得到预测的pred_boxes（使用回归值及其权重）
     """Forward transform that maps proposal boxes to predicted ground-truth
     boxes using bounding-box regression deltas. See bbox_transform_inv for a
     description of the weights argument.
@@ -262,9 +268,11 @@ def aspect_ratio(boxes, aspect_ratio):
     boxes_ar[:, 2::4] = aspect_ratio * boxes[:, 2::4]
     return boxes_ar
 
-
+#####感觉又是一个核心函数
+##### 大概意思好像是：将原来的top_dets进行refine（通过与all_dets进行bbox_voting）
 def box_voting(top_dets, all_dets, thresh, scoring_method='ID', beta=1.0):
     """Apply bounding-box voting to refine `top_dets` by voting with `all_dets`.
+
     See: https://arxiv.org/abs/1505.01749. Optional score averaging (not in the
     referenced  paper) can be applied by setting `scoring_method` appropriately.
     """
@@ -321,7 +329,7 @@ def nms(dets, thresh):
         return []
     return cython_nms.nms(dets, thresh)
 
-
+####还有soft_nms选项，惊不惊喜？？？？
 def soft_nms(
     dets, sigma=0.5, overlap_thresh=0.3, score_thresh=0.001, method='linear'
 ):

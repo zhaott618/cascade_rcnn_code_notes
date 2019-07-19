@@ -694,6 +694,7 @@ __C.CASCADE_RCNN.BBOX_REG_WEIGHTS = ((10., 10., 5., 5.), (20., 20., 10., 10.),
                                      (30., 30., 15., 15.))
 
 # scale loss for cascade stages
+
 __C.CASCADE_RCNN.SCALE_LOSS = True
 
 # scale loss for cascade stages
@@ -701,6 +702,7 @@ __C.CASCADE_RCNN.SCALE_GRAD = False
 
 
 ## 这个权重是干嘛的？？？
+## 答案：三个fast rcnn阶段损失占总损失的比例
 # weights for cascade stages
 __C.CASCADE_RCNN.STAGE_WEIGHTS = (1.0, 0.5, 0.25)
 
